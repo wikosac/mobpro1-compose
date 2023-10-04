@@ -4,17 +4,23 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,16 +46,16 @@ class MainActivity : ComponentActivity() {
 
     private fun getData(): List<Hewan> {
         return listOf(
-            Hewan("Angsa", "Cygnus olor"),
-            Hewan("Ayam", "Gallus gallus"),
-            Hewan("Bebek", "Cairina moschata"),
-            Hewan("Domba", "Ovis ammon"),
-            Hewan("Kalkun", "Meleagris gallopavo"),
-            Hewan("Kambing", "Capricornis sumatrensis"),
-            Hewan("Kelinci", "Oryctolagus cuniculus"),
-            Hewan("Kerbau", "Bubalus bubalis"),
-            Hewan("Kuda", "Equus caballus"),
-            Hewan("Sapi", "Bos taurus"),
+            Hewan("Angsa", "Cygnus olor", R.drawable.angsa),
+            Hewan("Ayam", "Gallus gallus", R.drawable.ayam),
+            Hewan("Bebek", "Cairina moschata", R.drawable.bebek),
+            Hewan("Domba", "Ovis ammon", R.drawable.domba),
+            Hewan("Kalkun", "Meleagris gallopavo", R.drawable.kalkun),
+            Hewan("Kambing", "Capricornis sumatrensis", R.drawable.kambing),
+            Hewan("Kelinci", "Oryctolagus cuniculus", R.drawable.kelinci),
+            Hewan("Kerbau", "Bubalus bubalis", R.drawable.kerbau),
+            Hewan("Kuda", "Equus caballus", R.drawable.kuda),
+            Hewan("Sapi", "Bos taurus", R.drawable.sapi),
         )
     }
 }
@@ -61,25 +67,35 @@ fun GaleriHewanApp(hewanList: List<Hewan>) {
     ) {
         items(hewanList) { hewan ->
             ListItem(hewan)
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp
+            )
         }
     }
 }
 
 @Composable
 fun ListItem(hewan: Hewan) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
-    ) {
-        Text(
-            text = hewan.nama,
-            style = MaterialTheme.typography.titleLarge
+    Row {
+        Image(
+            painter = painterResource(hewan.imageResId),
+            contentDescription = stringResource(id = R.string.gambar_hewan)
         )
-        Text(
-            text = hewan.namaLatin,
-            style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+        ) {
+            Text(
+                text = hewan.nama,
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = hewan.namaLatin,
+                style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
+            )
+        }
     }
 }
 
@@ -88,7 +104,7 @@ fun ListItem(hewan: Hewan) {
 fun ListPreview() {
     GaleriHewanTheme {
         ListItem(
-            Hewan("Angsa", "Cygnus olor")
+            Hewan("Domba", "Ovis ammon", R.drawable.domba)
         )
     }
 }
@@ -99,8 +115,8 @@ fun GreetingPreview() {
     GaleriHewanTheme {
         GaleriHewanApp(
             listOf(
-                Hewan("Angsa", "Cygnus olor"),
-                Hewan("Ayam", "Gallus gallus")
+                Hewan("Bebek", "Cairina moschata", R.drawable.bebek),
+                Hewan("Domba", "Ovis ammon", R.drawable.domba),
             )
         )
     }
