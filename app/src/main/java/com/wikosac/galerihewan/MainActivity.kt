@@ -30,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
-import kotlin.properties.Delegates
 
 class MainActivity : ComponentActivity() {
     private val hewan = listOf("Ayam", "Bebek", "Domba", "Kambing", "Sapi")
@@ -39,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             GaleriHewanTheme {
                 // A surface container using the 'background' color from the theme
@@ -46,37 +46,26 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    resourceId = when(index) {
+                        1 -> R.drawable.bebek
+                        2 -> R.drawable.domba
+                        3 -> R.drawable.kambing
+                        4 -> R.drawable.sapi
+                        else -> R.drawable.ayam
+                    }
+
                     GaleriHewanApp(
                         text = hewan[index],
-                        onClick = { showNext() },
-                        onBackClick = { showPrev() },
+                        onClick = {
+                            index = if (index == hewan.size-1) 0 else index + 1
+                        },
+                        onBackClick = {
+                            index = if (index == 0) hewan.size-1 else index - 1
+                        },
                         resourceId = resourceId
                     )
                 }
             }
-        }
-    }
-
-    private fun showNext() {
-        index = if (index == hewan.size-1) 0 else index + 1
-
-        resourceId = when(index) {
-            1 -> R.drawable.bebek
-            2 -> R.drawable.domba
-            3 -> R.drawable.kambing
-            4 -> R.drawable.sapi
-            else -> R.drawable.ayam
-        }
-    }
-    private fun showPrev() {
-        index = if (index == 0) hewan.size-1 else index - 1
-
-        resourceId = when(index) {
-            1 -> R.drawable.bebek
-            2 -> R.drawable.domba
-            3 -> R.drawable.kambing
-            4 -> R.drawable.sapi
-            else -> R.drawable.ayam
         }
     }
 }
@@ -84,10 +73,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GaleriHewanApp(
     modifier: Modifier = Modifier,
-    text: String = stringResource(R.string.hewan_default),
+    text: String,
     onClick: () -> Unit,
     onBackClick: () -> Unit,
-    resourceId: Int = R.drawable.ayam
+    resourceId: Int
 ) {
     Column(
         modifier
@@ -136,6 +125,11 @@ fun GaleriHewanApp(
 @Composable
 fun GreetingPreview() {
     GaleriHewanTheme {
-        GaleriHewanApp(text = "Hello Wikosac!", onClick = {}, onBackClick = {})
+        GaleriHewanApp(
+            text = stringResource(id = R.string.hewan_default),
+            onClick = {},
+            onBackClick = {},
+            resourceId = R.drawable.ayam
+        )
     }
 }
