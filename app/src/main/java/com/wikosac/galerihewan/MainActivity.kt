@@ -4,13 +4,22 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,12 +32,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GaleriHewanApp()
+                    GaleriHewanApp(getData())
                 }
             }
         }
-        Log.d("MainActivity", "Jumlah data: ${getData().size}")
     }
+
     private fun getData(): List<Hewan> {
         return listOf(
             Hewan("Angsa", "Cygnus olor"),
@@ -46,14 +55,53 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GaleriHewanApp() {
-    Text(text = "Hello World!")
+fun GaleriHewanApp(hewanList: List<Hewan>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(hewanList) { hewan ->
+            ListItem(hewan)
+        }
+    }
+}
+
+@Composable
+fun ListItem(hewan: Hewan) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+    ) {
+        Text(
+            text = hewan.nama,
+            style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+            text = hewan.namaLatin,
+            style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ListPreview() {
+    GaleriHewanTheme {
+        ListItem(
+            Hewan("Angsa", "Cygnus olor")
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     GaleriHewanTheme {
-        GaleriHewanApp()
+        GaleriHewanApp(
+            listOf(
+                Hewan("Angsa", "Cygnus olor"),
+                Hewan("Ayam", "Gallus gallus")
+            )
+        )
     }
 }
