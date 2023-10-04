@@ -7,10 +7,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
                     GaleriHewanApp(
                         text = hewan[index],
                         onClick = { showNext() },
+                        onBackClick = { showPrev() },
                         resourceId = resourceId
                     )
                 }
@@ -64,6 +68,17 @@ class MainActivity : ComponentActivity() {
             else -> R.drawable.ayam
         }
     }
+    private fun showPrev() {
+        index = if (index == 0) hewan.size-1 else index - 1
+
+        resourceId = when(index) {
+            1 -> R.drawable.bebek
+            2 -> R.drawable.domba
+            3 -> R.drawable.kambing
+            4 -> R.drawable.sapi
+            else -> R.drawable.ayam
+        }
+    }
 }
 
 @Composable
@@ -71,6 +86,7 @@ fun GaleriHewanApp(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.hewan_default),
     onClick: () -> Unit,
+    onBackClick: () -> Unit,
     resourceId: Int = R.drawable.ayam
 ) {
     Column(
@@ -89,14 +105,29 @@ fun GaleriHewanApp(
                 .padding(bottom = 16.dp)
         )
         Text(text = text)
-        Button(
-            onClick = { onClick() },
-            modifier
-                .fillMaxWidth(0.5f)
-                .padding(top = 16.dp),
-            contentPadding = PaddingValues(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = stringResource(R.string.lanjut))
+            Button(
+                onClick = { onBackClick() },
+                modifier
+                    .weight(1f)
+                    .padding(top = 16.dp),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                Text(text = stringResource(R.string.kembali))
+            }
+            Spacer(modifier.width(16.dp))
+            Button(
+                onClick = { onClick() },
+                modifier
+                    .weight(1f)
+                    .padding(top = 16.dp),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                Text(text = stringResource(R.string.lanjut))
+            }
         }
     }
 }
@@ -105,6 +136,6 @@ fun GaleriHewanApp(
 @Composable
 fun GreetingPreview() {
     GaleriHewanTheme {
-        GaleriHewanApp(text = "Hello Wikosac!", onClick = {})
+        GaleriHewanApp(text = "Hello Wikosac!", onClick = {}, onBackClick = {})
     }
 }
