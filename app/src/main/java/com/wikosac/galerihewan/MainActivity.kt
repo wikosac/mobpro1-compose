@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showNext() {
-        index++
+        index = if (index == hewan.size-1) 0 else index + 1
     }
 }
 
