@@ -3,12 +3,14 @@ package com.wikosac.galerihewan
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -19,14 +21,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
+import kotlin.properties.Delegates
 
 class MainActivity : ComponentActivity() {
     private val hewan = listOf("Ayam", "Bebek", "Domba", "Kambing", "Sapi")
     private var index by mutableStateOf(0)
+    private var resourceId = R.drawable.ayam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +45,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     GaleriHewanApp(
                         text = hewan[index],
-                        onClick = { showNext() }
+                        onClick = { showNext() },
+                        resourceId = resourceId
                     )
                 }
             }
@@ -48,14 +55,23 @@ class MainActivity : ComponentActivity() {
 
     private fun showNext() {
         index = if (index == hewan.size-1) 0 else index + 1
+
+        resourceId = when(index) {
+            1 -> R.drawable.bebek
+            2 -> R.drawable.domba
+            3 -> R.drawable.kambing
+            4 -> R.drawable.sapi
+            else -> R.drawable.ayam
+        }
     }
 }
 
 @Composable
 fun GaleriHewanApp(
     modifier: Modifier = Modifier,
-    text: String = stringResource(id = R.string.hewan_default),
-    onClick: () -> Unit
+    text: String = stringResource(R.string.hewan_default),
+    onClick: () -> Unit,
+    resourceId: Int = R.drawable.ayam
 ) {
     Column(
         modifier
@@ -64,6 +80,14 @@ fun GaleriHewanApp(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(
+            painter = painterResource(resourceId),
+            contentDescription = stringResource(R.string.gambar_hewan),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(132.dp)
+                .padding(bottom = 16.dp)
+        )
         Text(text = text)
         Button(
             onClick = { onClick() },
@@ -72,7 +96,7 @@ fun GaleriHewanApp(
                 .padding(top = 16.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
-            Text(text = stringResource(id = R.string.lanjut))
+            Text(text = stringResource(R.string.lanjut))
         }
     }
 }
