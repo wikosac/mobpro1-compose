@@ -1,4 +1,4 @@
-package com.wikosac.galerihewan
+package com.wikosac.galerihewan.model
 
 data class Hewan(
     val nama: String,
