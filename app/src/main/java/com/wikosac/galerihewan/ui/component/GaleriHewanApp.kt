@@ -8,12 +8,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -29,15 +41,51 @@ import com.wikosac.galerihewan.utils.showToast
 
 @Composable
 fun GaleriHewanApp(hewanList: List<Hewan>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(hewanList) { hewan ->
-            ListItem(hewan)
-            Divider(
-                color = Color.Gray,
-                thickness = 1.dp
+    var isLinearLayout by remember { mutableStateOf(true) }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(text = stringResource(id = R.string.app_name))
+                },
+                actions = {
+                    IconButton(onClick = {
+                        isLinearLayout = !isLinearLayout
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (isLinearLayout) R.drawable.ic_grid_layout else R.drawable.ic_linear_layout
+                            ),
+                            contentDescription = "Switch Layout"
+                        )
+                    }
+                }
             )
+        }
+    ) {
+        if (isLinearLayout) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            ) {
+                items(hewanList) { hewan ->
+                    ListItem(hewan)
+                }
+            }
+        } else {
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxSize().padding(it),
+                columns = GridCells.Fixed(2)
+            ) {
+                items(hewanList) { hewan ->
+                    ListItem(hewan)
+                }
+            }
         }
     }
 }
@@ -69,6 +117,10 @@ fun ListItem(hewan: Hewan) {
                 )
             }
         }
+        Divider(
+            color = Color.Gray,
+            thickness = 1.dp
+        )
     }
 }
 
