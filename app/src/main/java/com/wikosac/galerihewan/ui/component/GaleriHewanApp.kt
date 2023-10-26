@@ -1,6 +1,7 @@
+@file:OptIn(ExperimentalGlideComposeApi::class, ExperimentalGlideComposeApi::class)
+
 package com.wikosac.galerihewan.ui.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,10 +44,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.data.SettingDataStore
 import com.wikosac.galerihewan.data.dataStore
 import com.wikosac.galerihewan.model.Hewan
+import com.wikosac.galerihewan.network.HewanApi
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
 import com.wikosac.galerihewan.util.showToast
 import kotlinx.coroutines.launch
@@ -112,6 +117,7 @@ fun GaleriHewanApp(hewanList: List<Hewan>) {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ListItem(hewan: Hewan) {
     val context = LocalContext.current
@@ -120,9 +126,11 @@ fun ListItem(hewan: Hewan) {
         color = Color.White
     ) {
         Row {
-            Image(
-                painter = painterResource(hewan.imageResId),
-                contentDescription = stringResource(id = R.string.gambar_hewan)
+            GlideImage(
+                model = HewanApi.getHewanUrl(hewan.imageId),
+                contentDescription = hewan.nama,
+                loading = placeholder(R.drawable.baseline_broken_image_24),
+                failure = placeholder(R.drawable.baseline_broken_image_24)
             )
             Column(
                 modifier = Modifier
@@ -146,6 +154,7 @@ fun ListItem(hewan: Hewan) {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GridItem(hewan: Hewan) {
     val context = LocalContext.current
@@ -158,11 +167,15 @@ fun GridItem(hewan: Hewan) {
         Box(
             contentAlignment = Alignment.BottomCenter
         ) {
-            Image(
-                painter = painterResource(id = hewan.imageResId),
-                contentDescription = null,
+            GlideImage(
+                model = HewanApi.getHewanUrl(hewan.imageId),
+                contentDescription = hewan.nama,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.height(200.dp).width(200.dp)
+                loading = placeholder(R.drawable.baseline_broken_image_24),
+                failure = placeholder(R.drawable.baseline_broken_image_24),
+                modifier = Modifier
+                    .height(200.dp)
+                    .width(200.dp)
             )
             Column(
                 modifier = Modifier
@@ -191,7 +204,7 @@ fun GridItem(hewan: Hewan) {
 fun ListPreview() {
     GaleriHewanTheme {
         ListItem(
-            Hewan("Domba", "Ovis ammon", R.drawable.domba)
+            Hewan("Domba", "Ovis ammon", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/domba.jpg")
         )
     }
 }
@@ -201,7 +214,7 @@ fun ListPreview() {
 fun GridPreview() {
     GaleriHewanTheme {
         GridItem(
-            Hewan("Bebek", "Cairina moschata", R.drawable.bebek)
+            Hewan("Bebek", "Cairina moschata", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/bebek.jpg")
         )
     }
 }
@@ -212,16 +225,10 @@ fun GreetingPreview() {
     GaleriHewanTheme {
         GaleriHewanApp(
             listOf(
-                Hewan("Angsa", "Cygnus olor", R.drawable.angsa),
-                Hewan("Ayam", "Gallus gallus", R.drawable.ayam),
-                Hewan("Bebek", "Cairina moschata", R.drawable.bebek),
-                Hewan("Domba", "Ovis ammon", R.drawable.domba),
-                Hewan("Kalkun", "Meleagris gallopavo", R.drawable.kalkun),
-                Hewan("Kambing", "Capricornis sumatrensis", R.drawable.kambing),
-                Hewan("Kelinci", "Oryctolagus cuniculus", R.drawable.kelinci),
-                Hewan("Kerbau", "Bubalus bubalis", R.drawable.kerbau),
-                Hewan("Kuda", "Equus caballus", R.drawable.kuda),
-                Hewan("Sapi", "Bos taurus", R.drawable.sapi),
+                Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
+                Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
+                Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
+                Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
             )
         )
     }
