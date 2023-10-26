@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalGlideComposeApi::class, ExperimentalGlideComposeApi::class)
-
 package com.wikosac.galerihewan.ui.component
 
 import androidx.compose.foundation.background
@@ -12,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,13 +51,14 @@ import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.data.SettingDataStore
 import com.wikosac.galerihewan.data.dataStore
 import com.wikosac.galerihewan.model.Hewan
+import com.wikosac.galerihewan.network.ApiStatus
 import com.wikosac.galerihewan.network.HewanApi
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
 import com.wikosac.galerihewan.util.showToast
 import kotlinx.coroutines.launch
 
 @Composable
-fun GaleriHewanApp(hewanList: List<Hewan>) {
+fun GaleriHewanApp(hewanList: List<Hewan>, status: ApiStatus?) {
     val context = LocalContext.current
     val settingDataStore = remember { SettingDataStore(context.dataStore) }
     val layoutPreference by settingDataStore.preferenceFlow.collectAsState(true)
@@ -92,25 +93,51 @@ fun GaleriHewanApp(hewanList: List<Hewan>) {
             )
         }
     ) {
-        if (isLinearLayout) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                items(hewanList) { hewan ->
-                    ListItem(hewan)
+        when (status) {
+            ApiStatus.LOADING -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                    )
                 }
             }
-        } else {
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it),
-                columns = GridCells.Fixed(2)
-            ) {
-                items(hewanList) { hewan ->
-                    GridItem(hewan)
+            ApiStatus.FAILED -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.koneksi_error),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+            else -> {
+                if (isLinearLayout) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it)
+                    ) {
+                        items(hewanList) { hewan ->
+                            ListItem(hewan)
+                        }
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                        columns = GridCells.Fixed(2)
+                    ) {
+                        items(hewanList) { hewan ->
+                            GridItem(hewan)
+                        }
+                    }
                 }
             }
         }
@@ -229,7 +256,8 @@ fun GreetingPreview() {
                 Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
                 Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
                 Hewan("Angsa", "Cygnus olor", "https://raw.githubusercontent.com/indraazimi/galeri-hewan/static-api/angsa.jpg"),
-            )
+            ),
+            ApiStatus.FAILED
         )
     }
 }

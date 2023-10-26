@@ -4,4 +4,5 @@
     <string name="hewan_default">Ayam</string>
     <string name="gambar_hewan">Gambar hewan</string>
     <string name="kembali">Kembali</string>
+    <string name="koneksi_error">Koneksi error</string>
 </resources>
