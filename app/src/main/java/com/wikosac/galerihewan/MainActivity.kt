@@ -1,6 +1,7 @@
 package com.wikosac.galerihewan
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,5 +39,32 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        Log.i("MainActivity", "onCreate dijalankan")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("MainActivity", "onStart dijalankan")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("MainActivity", "onResume dijalankan")
+    }
+
+    override fun onPause() {
+        Log.i("MainActivity", "onPause dijalankan")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.i("MainActivity", "onStop dijalankan")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.i("MainActivity", "onDestroy dijalankan")
+        super.onDestroy()
     }
 }
