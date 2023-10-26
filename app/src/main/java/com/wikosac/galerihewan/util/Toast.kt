@@ -1,4 +1,4 @@
-package com.wikosac.galerihewan.utils
+package com.wikosac.galerihewan.util
 
 import android.content.Context
 import android.widget.Toast
