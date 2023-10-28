@@ -40,6 +40,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.wikosac.galerihewan.MainViewModel
 import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.model.HasilBmi
 import com.wikosac.galerihewan.model.KategoriBmi
@@ -55,6 +57,7 @@ fun HitungBmiPage() {
     var kategori by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val viewModel: MainViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -147,7 +150,7 @@ fun HitungBmiPage() {
             }
             Button(
                 onClick = {
-                    val result = hitungBmi(berat, tinggi, selectedOption, context)
+                    val result = hitungBmi(berat, tinggi, selectedOption, context, viewModel)
                     if (result != null) {
                         bmi = result.bmi
                         kategori = getKategoriLabel(result.kategori, context)
@@ -193,6 +196,7 @@ private fun hitungBmi(
     tinggi: String,
     gender: String,
     context: Context,
+    viewModel: MainViewModel
 ): HasilBmi? {
     if (berat.isBlank()) {
         Toast.makeText(context, context.getText(R.string.berat_invalid), Toast.LENGTH_SHORT).show()
@@ -205,30 +209,7 @@ private fun hitungBmi(
         return null
     }
 
-    return hitungBmi(berat.toFloat(), tinggi.toFloat(), gender)
-}
-
-private fun hitungBmi(berat: Float, tinggi: Float, gender: String): HasilBmi {
-    val tinggiCm = tinggi / 100
-    val bmi = berat / (tinggiCm * tinggiCm)
-    val kategori = getKategori(bmi, gender)
-    return HasilBmi(bmi, kategori)
-}
-
-private fun getKategori(bmi: Float, radioOption: String): KategoriBmi {
-    return if (radioOption == "Pria") {
-        when {
-            bmi < 20.5 -> KategoriBmi.KURUS
-            bmi >= 27.0 -> KategoriBmi.GEMUK
-            else -> KategoriBmi.IDEAL
-        }
-    } else {
-        when {
-            bmi < 18.5 -> KategoriBmi.KURUS
-            bmi >= 25.0 -> KategoriBmi.GEMUK
-            else -> KategoriBmi.IDEAL
-        }
-    }
+    return viewModel.hitungBmi(berat.toFloat(), tinggi.toFloat(), gender)
 }
 
 private fun getKategoriLabel(kategori: KategoriBmi, context: Context): String {
