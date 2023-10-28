@@ -1,16 +1,20 @@
 package com.wikosac.galerihewan
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.wikosac.galerihewan.model.HasilBmi
 import com.wikosac.galerihewan.model.KategoriBmi
 
 class MainViewModel: ViewModel() {
 
-    fun hitungBmi(berat: Float, tinggi: Float, gender: String): HasilBmi {
+    private val hasilBmi = MutableLiveData<HasilBmi?>()
+
+    fun hitungBmi(berat: Float, tinggi: Float, gender: String) {
         val tinggiCm = tinggi / 100
         val bmi = berat / (tinggiCm * tinggiCm)
         val kategori = getKategori(bmi, gender)
-        return HasilBmi(bmi, kategori)
+        hasilBmi.value = HasilBmi(bmi, kategori)
     }
 
     private fun getKategori(bmi: Float, radioOption: String): KategoriBmi {
@@ -27,5 +31,11 @@ class MainViewModel: ViewModel() {
                 else -> KategoriBmi.IDEAL
             }
         }
+    }
+
+    fun getHasilBmi(): LiveData<HasilBmi?> = hasilBmi
+
+    fun resetHasilBmi() {
+        hasilBmi.value = null
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,7 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wikosac.galerihewan.MainViewModel
 import com.wikosac.galerihewan.R
-import com.wikosac.galerihewan.model.HasilBmi
 import com.wikosac.galerihewan.model.KategoriBmi
 
 @Composable
@@ -53,11 +53,10 @@ fun HitungBmiPage() {
     val radioOptions =
         listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
     var (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
-    var bmi by remember { mutableStateOf(0f) }
-    var kategori by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val viewModel: MainViewModel = viewModel()
+    val hasilBmi = viewModel.getHasilBmi().observeAsState().value
 
     Column(
         modifier = Modifier
@@ -150,11 +149,7 @@ fun HitungBmiPage() {
             }
             Button(
                 onClick = {
-                    val result = hitungBmi(berat, tinggi, selectedOption, context, viewModel)
-                    if (result != null) {
-                        bmi = result.bmi
-                        kategori = getKategoriLabel(result.kategori, context)
-                    }
+                    hitungBmi(berat, tinggi, selectedOption, context, viewModel)
                 },
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 shape = MaterialTheme.shapes.medium
@@ -163,13 +158,18 @@ fun HitungBmiPage() {
             }
         }
         Divider(thickness = 1.dp)
-        if (bmi != 0f) {
+        if (hasilBmi != null) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(id = R.string.bmi_x, bmi))
-                Text(text = stringResource(id = R.string.kategori_x, kategori))
+                Text(text = stringResource(id = R.string.bmi_x, hasilBmi.bmi))
+                Text(
+                    text = stringResource(
+                        id = R.string.kategori_x,
+                        getKategoriLabel(hasilBmi.kategori, context)
+                    )
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
@@ -177,8 +177,7 @@ fun HitungBmiPage() {
                         tinggi = ""
                         selectedOption = ""
                         onOptionSelected("")
-                        bmi = 0f
-                        kategori = ""
+                        viewModel.resetHasilBmi()
                         focusManager.clearFocus()
                     },
                     contentPadding = PaddingValues(horizontal = 16.dp),
@@ -197,19 +196,19 @@ private fun hitungBmi(
     gender: String,
     context: Context,
     viewModel: MainViewModel
-): HasilBmi? {
+) {
     if (berat.isBlank()) {
         Toast.makeText(context, context.getText(R.string.berat_invalid), Toast.LENGTH_SHORT).show()
-        return null
+        return
     } else if (tinggi.isBlank()) {
         Toast.makeText(context, context.getText(R.string.tinggi_invalid), Toast.LENGTH_SHORT).show()
-        return null
+        return
     } else if (gender.isBlank()) {
         Toast.makeText(context, context.getText(R.string.gender_invalid), Toast.LENGTH_SHORT).show()
-        return null
+        return
     }
 
-    return viewModel.hitungBmi(berat.toFloat(), tinggi.toFloat(), gender)
+    viewModel.hitungBmi(berat.toFloat(), tinggi.toFloat(), gender)
 }
 
 private fun getKategoriLabel(kategori: KategoriBmi, context: Context): String {
