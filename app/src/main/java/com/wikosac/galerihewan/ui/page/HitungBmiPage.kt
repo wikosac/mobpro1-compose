@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -34,10 +35,19 @@ import com.wikosac.galerihewan.R
 
 @Composable
 fun HitungBmiPage() {
+    var berat by remember { mutableStateOf("") }
+    var tinggi by remember { mutableStateOf("") }
+    val radioOptions =
+        listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+    var bmi by remember { mutableStateOf(0f) }
+    var kategoriId by remember { mutableStateOf(0) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(36.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,7 +62,6 @@ fun HitungBmiPage() {
                 modifier = Modifier.fillMaxWidth(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                var berat by remember { mutableStateOf("") }
                 Text(
                     text = stringResource(id = R.string.berat_badan),
                     modifier = Modifier.fillMaxWidth(0.3f)
@@ -69,7 +78,6 @@ fun HitungBmiPage() {
                 modifier = Modifier.fillMaxWidth(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                var tinggi by remember { mutableStateOf("") }
                 Text(
                     text = stringResource(id = R.string.tinggi_badan),
                     modifier = Modifier.fillMaxWidth(0.3f)
@@ -95,8 +103,6 @@ fun HitungBmiPage() {
                     modifier = Modifier.selectableGroup(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    val radioOptions = listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
-                    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
                     radioOptions.forEach { text ->
                         Row(
                             modifier = Modifier.selectable(
@@ -120,12 +126,46 @@ fun HitungBmiPage() {
                 }
             }
             Button(
-                onClick = {},
+                onClick = {
+                    bmi = hitungBmi(berat.toFloat(), tinggi.toFloat())
+                    kategoriId = getKategoriId(bmi, selectedOption)
+                },
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
                 Text(stringResource(id = R.string.hitung))
             }
+        }
+        Divider(thickness = 1.dp)
+        if (bmi != 0f) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = stringResource(id = R.string.bmi_x, bmi))
+                Text(text = stringResource(id = R.string.kategori_x, stringResource(id = kategoriId)))
+            }
+        }
+    }
+}
+
+private fun hitungBmi(berat: Float, tinggi: Float): Float {
+    val mTinggi = tinggi / 100
+    return berat / (mTinggi * mTinggi)
+}
+
+private fun getKategoriId(bmi: Float, radioOption: String): Int {
+    return if (radioOption == "Pria") {
+        when {
+            bmi < 20.5 -> R.string.kurus
+            bmi >= 27.0 -> R.string.gemuk
+            else -> R.string.ideal
+        }
+    } else {
+        when {
+            bmi < 18.5 -> R.string.kurus
+            bmi >= 25.0 -> R.string.gemuk
+            else -> R.string.ideal
         }
     }
 }
