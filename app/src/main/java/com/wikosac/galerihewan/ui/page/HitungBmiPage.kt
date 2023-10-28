@@ -25,6 +25,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wikosac.galerihewan.R
+import com.wikosac.galerihewan.ui.theme.fontFamily
+import com.wikosac.galerihewan.ui.theme.fontFamilyButton
 
 @Composable
 fun HitungBmiPage() {
@@ -50,8 +54,8 @@ fun HitungBmiPage() {
         stringResource(id = R.string.wanita)
     )
     var (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
-    var bmi by remember { mutableStateOf(0f) }
-    var kategoriId by remember { mutableStateOf(0) }
+    var bmi by remember { mutableFloatStateOf(0f) }
+    var kategoriId by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
@@ -69,6 +73,7 @@ fun HitungBmiPage() {
             Text(
                 text = stringResource(id = R.string.bmi_intro),
                 fontSize = 16.sp,
+                fontFamily = fontFamily,
                 modifier = Modifier.fillMaxWidth(1f),
             )
             OutlinedTextField(
@@ -129,7 +134,11 @@ fun HitungBmiPage() {
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 shape = MaterialTheme.shapes.small
             ) {
-                Text(stringResource(id = R.string.hitung))
+                Text(
+                    stringResource(id = R.string.hitung),
+                    fontFamily = fontFamilyButton,
+                    fontSize = 24.sp
+                )
             }
         }
         Divider(thickness = 1.dp)
