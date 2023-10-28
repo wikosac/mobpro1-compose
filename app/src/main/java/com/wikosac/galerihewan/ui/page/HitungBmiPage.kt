@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +58,7 @@ fun HitungBmiPage() {
         verticalArrangement = Arrangement.spacedBy(36.dp)
     ) {
         Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
@@ -65,7 +68,7 @@ fun HitungBmiPage() {
                 modifier = Modifier.fillMaxWidth(1f),
             )
             Row(
-                modifier = Modifier.fillMaxWidth(1f),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -78,11 +81,12 @@ fun HitungBmiPage() {
                     onValueChange = { berat = it },
                     trailingIcon = { Text(text = "kg") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             Row(
-                modifier = Modifier.fillMaxWidth(1f),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -95,11 +99,12 @@ fun HitungBmiPage() {
                     onValueChange = { tinggi = it },
                     trailingIcon = { Text(text = "cm") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
+                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             Row(
-                modifier = Modifier.fillMaxWidth(1f),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -108,8 +113,8 @@ fun HitungBmiPage() {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Row(
-                    modifier = Modifier.selectableGroup(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.selectableGroup().fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     radioOptions.forEach { text ->
                         Row(
