@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wikosac.galerihewan.R
+import com.wikosac.galerihewan.model.KategoriBmi
 
 @Composable
 fun HitungBmiPage() {
@@ -146,7 +147,7 @@ fun HitungBmiPage() {
             Button(
                 onClick = {
                     bmi = hitungBmi(berat, tinggi, selectedOption, context)
-                    kategoriId = getKategoriId(bmi, selectedOption)
+                    kategoriId = getKategoriId(getKategori(bmi, selectedOption))
                 },
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 shape = MaterialTheme.shapes.medium
@@ -204,21 +205,30 @@ private fun hitungBmi(berat: String, tinggi: String, gender: String, context: Co
     return berat.toFloat() / (mTinggi * mTinggi)
 }
 
-private fun getKategoriId(bmi: Float, radioOption: String): Int {
+private fun getKategori(bmi: Float, radioOption: String): KategoriBmi {
     return if (radioOption == "Pria") {
         when {
-            bmi < 20.5 -> R.string.kurus
-            bmi >= 27.0 -> R.string.gemuk
-            else -> R.string.ideal
+            bmi < 20.5 -> KategoriBmi.KURUS
+            bmi >= 27.0 -> KategoriBmi.GEMUK
+            else -> KategoriBmi.IDEAL
         }
     } else {
         when {
-            bmi < 18.5 -> R.string.kurus
-            bmi >= 25.0 -> R.string.gemuk
-            else -> R.string.ideal
+            bmi < 18.5 -> KategoriBmi.KURUS
+            bmi >= 25.0 -> KategoriBmi.GEMUK
+            else -> KategoriBmi.IDEAL
         }
     }
 }
+
+private fun getKategoriId(kategori: KategoriBmi): Int {
+    return when (kategori) {
+        KategoriBmi.KURUS -> R.string.kurus
+        KategoriBmi.IDEAL -> R.string.ideal
+        KategoriBmi.GEMUK -> R.string.gemuk
+    }
+}
+
 
 @Composable
 @Preview(showBackground = true)
