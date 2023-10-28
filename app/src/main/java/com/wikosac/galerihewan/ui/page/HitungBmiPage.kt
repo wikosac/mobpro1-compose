@@ -1,5 +1,7 @@
 package com.wikosac.galerihewan.ui.page
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -26,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,9 +44,10 @@ fun HitungBmiPage() {
     var tinggi by remember { mutableStateOf("") }
     val radioOptions =
         listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
     var bmi by remember { mutableStateOf(0f) }
     var kategoriId by remember { mutableStateOf(0) }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -71,6 +77,7 @@ fun HitungBmiPage() {
                     value = berat,
                     onValueChange = { berat = it },
                     trailingIcon = { Text(text = "kg") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
                 )
             }
@@ -87,6 +94,7 @@ fun HitungBmiPage() {
                     value = tinggi,
                     onValueChange = { tinggi = it },
                     trailingIcon = { Text(text = "cm") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent)
                 )
             }
@@ -127,7 +135,7 @@ fun HitungBmiPage() {
             }
             Button(
                 onClick = {
-                    bmi = hitungBmi(berat.toFloat(), tinggi.toFloat())
+                    bmi = hitungBmi(berat, tinggi, selectedOption, context)
                     kategoriId = getKategoriId(bmi, selectedOption)
                 },
                 contentPadding = PaddingValues(horizontal = 16.dp),
@@ -143,15 +151,31 @@ fun HitungBmiPage() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = stringResource(id = R.string.bmi_x, bmi))
-                Text(text = stringResource(id = R.string.kategori_x, stringResource(id = kategoriId)))
+                Text(
+                    text = stringResource(
+                        id = R.string.kategori_x,
+                        stringResource(id = kategoriId)
+                    )
+                )
             }
         }
     }
 }
 
-private fun hitungBmi(berat: Float, tinggi: Float): Float {
-    val mTinggi = tinggi / 100
-    return berat / (mTinggi * mTinggi)
+private fun hitungBmi(berat: String, tinggi: String, gender: String, context: Context): Float {
+    if (berat.isBlank()) {
+        Toast.makeText(context, context.getText(R.string.berat_invalid), Toast.LENGTH_SHORT).show()
+        return 0f
+    } else if (tinggi.isBlank()) {
+        Toast.makeText(context, context.getText(R.string.tinggi_invalid), Toast.LENGTH_SHORT).show()
+        return 0f
+    } else if (gender.isBlank()) {
+        Toast.makeText(context, context.getText(R.string.gender_invalid), Toast.LENGTH_SHORT).show()
+        return 0f
+    }
+
+    val mTinggi = tinggi.toFloat() / 100
+    return berat.toFloat() / (mTinggi * mTinggi)
 }
 
 private fun getKategoriId(bmi: Float, radioOption: String): Int {
