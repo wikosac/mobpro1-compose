@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wikosac.galerihewan.R
+import com.wikosac.galerihewan.model.HasilBmi
 import com.wikosac.galerihewan.model.KategoriBmi
 
 @Composable
@@ -51,7 +52,7 @@ fun HitungBmiPage() {
         listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
     var (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
     var bmi by remember { mutableStateOf(0f) }
-    var kategoriId by remember { mutableStateOf(0) }
+    var kategori by remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
@@ -146,8 +147,11 @@ fun HitungBmiPage() {
             }
             Button(
                 onClick = {
-                    bmi = hitungBmi(berat, tinggi, selectedOption, context)
-                    kategoriId = getKategoriId(getKategori(bmi, selectedOption))
+                    val result = hitungBmi(berat, tinggi, selectedOption, context)
+                    if (result != null) {
+                        bmi = result.bmi
+                        kategori = getKategoriLabel(result.kategori, context)
+                    }
                 },
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 shape = MaterialTheme.shapes.medium
@@ -162,12 +166,7 @@ fun HitungBmiPage() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = stringResource(id = R.string.bmi_x, bmi))
-                Text(
-                    text = stringResource(
-                        id = R.string.kategori_x,
-                        stringResource(id = kategoriId)
-                    )
-                )
+                Text(text = stringResource(id = R.string.kategori_x, kategori))
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
@@ -176,7 +175,7 @@ fun HitungBmiPage() {
                         selectedOption = ""
                         onOptionSelected("")
                         bmi = 0f
-                        kategoriId = 0
+                        kategori = ""
                         focusManager.clearFocus()
                     },
                     contentPadding = PaddingValues(horizontal = 16.dp),
@@ -189,20 +188,31 @@ fun HitungBmiPage() {
     }
 }
 
-private fun hitungBmi(berat: String, tinggi: String, gender: String, context: Context): Float {
+private fun hitungBmi(
+    berat: String,
+    tinggi: String,
+    gender: String,
+    context: Context,
+): HasilBmi? {
     if (berat.isBlank()) {
         Toast.makeText(context, context.getText(R.string.berat_invalid), Toast.LENGTH_SHORT).show()
-        return 0f
+        return null
     } else if (tinggi.isBlank()) {
         Toast.makeText(context, context.getText(R.string.tinggi_invalid), Toast.LENGTH_SHORT).show()
-        return 0f
+        return null
     } else if (gender.isBlank()) {
         Toast.makeText(context, context.getText(R.string.gender_invalid), Toast.LENGTH_SHORT).show()
-        return 0f
+        return null
     }
 
-    val mTinggi = tinggi.toFloat() / 100
-    return berat.toFloat() / (mTinggi * mTinggi)
+    return hitungBmi(berat.toFloat(), tinggi.toFloat(), gender)
+}
+
+private fun hitungBmi(berat: Float, tinggi: Float, gender: String): HasilBmi {
+    val tinggiCm = tinggi / 100
+    val bmi = berat / (tinggiCm * tinggiCm)
+    val kategori = getKategori(bmi, gender)
+    return HasilBmi(bmi, kategori)
 }
 
 private fun getKategori(bmi: Float, radioOption: String): KategoriBmi {
@@ -221,14 +231,14 @@ private fun getKategori(bmi: Float, radioOption: String): KategoriBmi {
     }
 }
 
-private fun getKategoriId(kategori: KategoriBmi): Int {
-    return when (kategori) {
+private fun getKategoriLabel(kategori: KategoriBmi, context: Context): String {
+    val stringRes = when (kategori) {
         KategoriBmi.KURUS -> R.string.kurus
         KategoriBmi.IDEAL -> R.string.ideal
         KategoriBmi.GEMUK -> R.string.gemuk
     }
+    return context.getString(stringRes)
 }
-
 
 @Composable
 @Preview(showBackground = true)
