@@ -42,9 +42,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.wikosac.galerihewan.MainViewModel
 import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.model.KategoriBmi
+import com.wikosac.galerihewan.ui.HitungViewModel
 
 @Composable
 fun HitungBmiPage() {
@@ -55,7 +55,7 @@ fun HitungBmiPage() {
     var (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val viewModel: MainViewModel = viewModel()
+    val viewModel: HitungViewModel = viewModel()
     val hasilBmi = viewModel.getHasilBmi().observeAsState().value
 
     Column(
@@ -195,7 +195,7 @@ private fun hitungBmi(
     tinggi: String,
     gender: String,
     context: Context,
-    viewModel: MainViewModel
+    viewModel: HitungViewModel
 ) {
     if (berat.isBlank()) {
         Toast.makeText(context, context.getText(R.string.berat_invalid), Toast.LENGTH_SHORT).show()

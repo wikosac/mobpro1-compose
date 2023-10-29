@@ -1,4 +1,4 @@
-package com.wikosac.galerihewan
+package com.wikosac.galerihewan.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.wikosac.galerihewan.model.HasilBmi
 import com.wikosac.galerihewan.model.KategoriBmi
 
-class MainViewModel: ViewModel() {
+class HitungViewModel: ViewModel() {
 
     private val hasilBmi = MutableLiveData<HasilBmi?>()
 
