@@ -8,4 +8,5 @@ sealed class Screen(val route: String) {
         fun passCategory(category: String) = "saran_page/$category"
     }
     data object About: Screen("about_page")
+    data object History: Screen("histori_page")
 }

@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
@@ -78,6 +79,7 @@ fun HitungBmiPage(navController: NavController) {
                     Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
+                    HistoryAction { navController.navigate(Screen.History.route) }
                     MoreVertAction { navController.navigate(Screen.About.route) }
                 }
             )
@@ -292,6 +294,17 @@ fun HasilBmiContent(
         ) {
             Text(stringResource(id = R.string.reset))
         }
+    }
+}
+
+@Composable
+fun HistoryAction(navigateToHistoriPage: () -> Unit) {
+    IconButton(onClick = { navigateToHistoriPage() }) {
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_history_24),
+            contentDescription = stringResource(id = R.string.histori),
+            tint = MaterialTheme.colorScheme.primary
+        )
     }
 }
 

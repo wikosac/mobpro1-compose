@@ -29,4 +29,6 @@
     <string name="bagikan">Bagikan</string>
     <string name="bagikan_template">Berat badan: %1$s kg\nTinggi badan: %2$scm\nJenis kelamin: %3$s\n\n%4$s\n%5$s</string>
     <string name="isi_kembali">Silakan isi data pada form kembali</string>
+    <string name="histori">Histori</string>
+    <string name="belum_ada_data">Belum ada data</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.wikosac.galerihewan.ui.page.AboutPage
+import com.wikosac.galerihewan.ui.page.HistoriPage
 import com.wikosac.galerihewan.ui.page.HitungBmiPage
 import com.wikosac.galerihewan.ui.page.SaranPage
 
@@ -34,6 +35,9 @@ fun SetupNavGraph(
         }
         composable(route = Screen.About.route) {
             AboutPage(navController = navController)
+        }
+        composable(route = Screen.History.route) {
+            HistoriPage(navController = navController)
         }
     }
 }
