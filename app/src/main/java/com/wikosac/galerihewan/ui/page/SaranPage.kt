@@ -34,9 +34,9 @@ import com.wikosac.galerihewan.model.SaranBmi
 @Composable
 fun SaranPage(
     navController: NavController,
-    kategoriBmi: KategoriBmi
+    category: String
 ) {
-    val saranBmi = updateUI(kategoriBmi)
+    val saranBmi = updateUI(category)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -44,7 +44,8 @@ fun SaranPage(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.kembali)
+                            contentDescription = stringResource(R.string.kembali),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -87,27 +88,27 @@ fun SaranContent(saranBmi: SaranBmi) {
     }
 }
 
-private fun updateUI(kategori: KategoriBmi): SaranBmi {
-    return when (kategori) {
-        KategoriBmi.KURUS -> {
+private fun updateUI(category: String): SaranBmi {
+    return when (category) {
+        KategoriBmi.KURUS.name -> {
             SaranBmi(
                 appBarTitleId = R.string.judul_kurus,
                 imgResId = R.drawable.kurus,
                 descId = R.string.saran_kurus
             )
         }
-        KategoriBmi.IDEAL -> {
-            SaranBmi(
-                appBarTitleId = R.string.judul_ideal,
-                imgResId = R.drawable.ideal,
-                descId = R.string.saran_ideal
-            )
-        }
-        KategoriBmi.GEMUK -> {
+        KategoriBmi.GEMUK.name -> {
             SaranBmi(
                 appBarTitleId = R.string.judul_gemuk,
                 imgResId = R.drawable.gemuk,
                 descId = R.string.saran_gemuk
+            )
+        }
+        else -> {
+            SaranBmi(
+                appBarTitleId = R.string.judul_ideal,
+                imgResId = R.drawable.ideal,
+                descId = R.string.saran_ideal
             )
         }
     }
@@ -116,5 +117,5 @@ private fun updateUI(kategori: KategoriBmi): SaranBmi {
 @Composable
 @Preview(showBackground = true)
 fun SaranPagePreview() {
-    SaranPage(rememberNavController(), KategoriBmi.GEMUK)
+    SaranPage(rememberNavController(), KategoriBmi.GEMUK.name)
 }

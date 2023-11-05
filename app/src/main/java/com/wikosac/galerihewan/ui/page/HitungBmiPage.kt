@@ -205,7 +205,9 @@ fun HitungBmiContent(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        navController.navigate(route = Screen.Saran.route)
+                        navController.navigate(
+                            route = Screen.Saran.passCategory(hasilBmi.kategori.name)
+                        )
                     },
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     shape = MaterialTheme.shapes.medium
