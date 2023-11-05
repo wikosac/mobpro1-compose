@@ -18,8 +18,14 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -54,9 +60,7 @@ import com.wikosac.galerihewan.ui.HitungViewModel
 import com.wikosac.galerihewan.ui.navigation.Screen
 
 @Composable
-fun HitungBmiPage(
-    navController: NavController
-) {
+fun HitungBmiPage(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,6 +70,9 @@ fun HitungBmiPage(
                 ),
                 title = {
                     Text(text = stringResource(id = R.string.app_name))
+                },
+                actions = {
+                    MoreVertAction { navController.navigate(Screen.About.route) }
                 }
             )
         }
@@ -77,9 +84,7 @@ fun HitungBmiPage(
 }
 
 @Composable
-fun HitungBmiContent(
-    navController: NavController
-) {
+fun HitungBmiContent(navController: NavController) {
     var berat by remember { mutableStateOf("") }
     var tinggi by remember { mutableStateOf("") }
     val radioOptions =
@@ -230,6 +235,39 @@ fun HitungBmiContent(
                     Text(stringResource(id = R.string.reset))
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun MoreVertAction(navigateToAboutPage: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = { expanded = true }
+    ) {
+        Icon(
+            imageVector = Icons.Filled.MoreVert,
+            contentDescription = stringResource(R.string.tentang_aplikasi),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(R.string.tentang_aplikasi),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                },
+                onClick = {
+                    expanded = false
+                    navigateToAboutPage()
+                }
+            )
         }
     }
 }

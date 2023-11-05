@@ -7,4 +7,5 @@ sealed class Screen(val route: String) {
     data object Saran: Screen("saran_page/{$SARAN_ARGUMENT_KEY}") {
         fun passCategory(category: String) = "saran_page/$category"
     }
+    data object About: Screen("about_page")
 }

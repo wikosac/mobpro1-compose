@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.wikosac.galerihewan.ui.page.AboutPage
 import com.wikosac.galerihewan.ui.page.HitungBmiPage
 import com.wikosac.galerihewan.ui.page.SaranPage
 
@@ -18,7 +19,7 @@ fun SetupNavGraph(
         startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
-            HitungBmiPage(navController)
+            HitungBmiPage(navController = navController)
         }
         composable(
             route = Screen.Saran.route,
@@ -30,6 +31,9 @@ fun SetupNavGraph(
         ) { navBackStackEntry ->
             val category = navBackStackEntry.arguments?.getString(SARAN_ARGUMENT_KEY)
             SaranPage(navController = navController, category = category!!)
+        }
+        composable(route = Screen.About.route) {
+            AboutPage(navController = navController)
         }
     }
 }
