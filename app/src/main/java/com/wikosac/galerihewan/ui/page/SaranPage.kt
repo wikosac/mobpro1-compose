@@ -2,12 +2,17 @@ package com.wikosac.galerihewan.ui.page
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,12 +24,31 @@ import androidx.compose.ui.unit.dp
 import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.model.KategoriBmi
 import com.wikosac.galerihewan.model.SaranBmi
-import com.wikosac.galerihewan.util.AppBarTitle
 
 @Composable
 fun SaranPage(kategoriBmi: KategoriBmi) {
     val saranBmi = updateUI(kategoriBmi)
-    AppBarTitle.title = stringResource(id = saranBmi.appBarTitleId)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(text = stringResource(id = saranBmi.appBarTitleId))
+                }
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
+            SaranContent(saranBmi)
+        }
+    }
+}
+
+@Composable
+fun SaranContent(saranBmi: SaranBmi) {
     Column(
         modifier = Modifier
             .fillMaxSize()

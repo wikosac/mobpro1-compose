@@ -3,6 +3,7 @@ package com.wikosac.galerihewan.ui.page
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,9 +22,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -48,6 +52,27 @@ import com.wikosac.galerihewan.ui.HitungViewModel
 
 @Composable
 fun HitungBmiPage() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(text = stringResource(id = R.string.app_name))
+                }
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
+            HitungBmiContent()
+        }
+    }
+}
+
+@Composable
+fun HitungBmiContent() {
     var berat by remember { mutableStateOf("") }
     var tinggi by remember { mutableStateOf("") }
     val radioOptions =
