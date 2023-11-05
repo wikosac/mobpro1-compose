@@ -1,6 +1,7 @@
 package com.wikosac.galerihewan.ui.page
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -85,11 +87,13 @@ fun HitungBmiPage(navController: NavController) {
 
 @Composable
 fun HitungBmiContent(navController: NavController) {
-    var berat by remember { mutableStateOf("") }
-    var tinggi by remember { mutableStateOf("") }
-    val radioOptions =
-        listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
-    var (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
+    var berat by rememberSaveable { mutableStateOf("") }
+    var tinggi by rememberSaveable { mutableStateOf("") }
+    val radioOptions = listOf(
+        stringResource(id = R.string.pria),
+        stringResource(id = R.string.wanita)
+    )
+    var (selectedOption, onOptionSelected) = rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val viewModel: HitungViewModel = viewModel()
@@ -196,45 +200,86 @@ fun HitungBmiContent(navController: NavController) {
         }
         Divider(thickness = 1.dp)
         if (hasilBmi != null) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = stringResource(id = R.string.bmi_x, hasilBmi.bmi))
-                Text(
-                    text = stringResource(
-                        id = R.string.kategori_x,
-                        getKategoriLabel(hasilBmi.kategori, context)
+            HasilBmiContent(
+                bmi = stringResource(id = R.string.bmi_x, hasilBmi.bmi),
+                category = stringResource(
+                    id = R.string.kategori_x,
+                    getKategoriLabel(hasilBmi.kategori, context)
+                ),
+                onSaranClicked = {
+                    navController.navigate(
+                        route = Screen.Saran.passCategory(hasilBmi.kategori.name)
                     )
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        navController.navigate(
-                            route = Screen.Saran.passCategory(hasilBmi.kategori.name)
+                },
+                onShareClicked = {
+                    shareData(
+                        context = context,
+                        message = context.getString(
+                            R.string.bagikan_template,
+                            berat,
+                            tinggi,
+                            selectedOption,
+                            context.getString(R.string.bmi_x, hasilBmi.bmi),
+                            context.getString(
+                                R.string.kategori_x,
+                                getKategoriLabel(hasilBmi.kategori, context)
+                            )
                         )
-                    },
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text(stringResource(id = R.string.lihat_saran))
+                    )
+
+                },
+                onResetClicked = {
+                    berat = ""
+                    tinggi = ""
+                    selectedOption = ""
+                    onOptionSelected("")
+                    viewModel.resetHasilBmi()
+                    focusManager.clearFocus()
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        berat = ""
-                        tinggi = ""
-                        selectedOption = ""
-                        onOptionSelected("")
-                        viewModel.resetHasilBmi()
-                        focusManager.clearFocus()
-                    },
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text(stringResource(id = R.string.reset))
-                }
+            )
+        }
+    }
+}
+
+@Composable
+fun HasilBmiContent(
+    bmi: String,
+    category: String,
+    onSaranClicked: () -> Unit,
+    onShareClicked: () -> Unit,
+    onResetClicked: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = bmi)
+        Text(text = category)
+        Spacer(modifier = Modifier.height(24.dp))
+        Row {
+            Button(
+                onClick = { onSaranClicked() },
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text(stringResource(id = R.string.lihat_saran))
             }
+            Spacer(modifier = Modifier.width(24.dp))
+            Button(
+                onClick = { onShareClicked() },
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text(stringResource(id = R.string.bagikan))
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = { onResetClicked() },
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Text(stringResource(id = R.string.reset))
         }
     }
 }
@@ -302,8 +347,27 @@ private fun getKategoriLabel(kategori: KategoriBmi, context: Context): String {
     return context.getString(stringRes)
 }
 
+private fun shareData(context: Context, message: String) {
+    val shareIntent = Intent(Intent.ACTION_SEND)
+    shareIntent.setType("text/plain").putExtra(Intent.EXTRA_TEXT, message)
+    if (shareIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(shareIntent)
+    }
+}
+
 @Composable
 @Preview(showBackground = true)
 fun HitungBmiPagePreview() {
     HitungBmiPage(rememberNavController())
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HasilBmiContentPreview() {
+    HasilBmiContent(
+        bmi = "BMI: x",
+        category = "Kategori: x",
+        onSaranClicked = {},
+        onShareClicked = {}
+    ) {}
 }
