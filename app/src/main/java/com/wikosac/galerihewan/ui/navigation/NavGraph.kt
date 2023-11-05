@@ -17,10 +17,10 @@ fun SetupNavGraph(
         startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
-            HitungBmiPage()
+            HitungBmiPage(navController)
         }
         composable(route = Screen.Saran.route) {
-            SaranPage(kategoriBmi = KategoriBmi.IDEAL)
+            SaranPage(navController = navController, kategoriBmi = KategoriBmi.IDEAL)
         }
     }
 }

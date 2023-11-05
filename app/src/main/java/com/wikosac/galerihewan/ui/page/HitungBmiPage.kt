@@ -46,12 +46,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.model.KategoriBmi
 import com.wikosac.galerihewan.ui.HitungViewModel
+import com.wikosac.galerihewan.ui.navigation.Screen
 
 @Composable
-fun HitungBmiPage() {
+fun HitungBmiPage(
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,13 +71,15 @@ fun HitungBmiPage() {
         }
     ) {
         Box(Modifier.padding(it)) {
-            HitungBmiContent()
+            HitungBmiContent(navController)
         }
     }
 }
 
 @Composable
-fun HitungBmiContent() {
+fun HitungBmiContent(
+    navController: NavController
+) {
     var berat by remember { mutableStateOf("") }
     var tinggi by remember { mutableStateOf("") }
     val radioOptions =
@@ -198,6 +205,16 @@ fun HitungBmiContent() {
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
+                        navController.navigate(route = Screen.Saran.route)
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Text(stringResource(id = R.string.lihat_saran))
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
                         berat = ""
                         tinggi = ""
                         selectedOption = ""
@@ -248,5 +265,5 @@ private fun getKategoriLabel(kategori: KategoriBmi, context: Context): String {
 @Composable
 @Preview(showBackground = true)
 fun HitungBmiPagePreview() {
-    HitungBmiPage()
+    HitungBmiPage(rememberNavController())
 }
