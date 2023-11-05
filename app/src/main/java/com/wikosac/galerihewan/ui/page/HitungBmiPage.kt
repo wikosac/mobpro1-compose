@@ -2,7 +2,6 @@ package com.wikosac.galerihewan.ui.page
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,8 +61,8 @@ import androidx.navigation.compose.rememberNavController
 import com.wikosac.galerihewan.R
 import com.wikosac.galerihewan.db.BmiDb
 import com.wikosac.galerihewan.model.KategoriBmi
+import com.wikosac.galerihewan.ui.ViewModelFactory
 import com.wikosac.galerihewan.ui.hitung.HitungViewModel
-import com.wikosac.galerihewan.ui.hitung.HitungViewModelFactory
 import com.wikosac.galerihewan.ui.navigation.Screen
 
 @Composable
@@ -104,13 +103,10 @@ fun HitungBmiContent(navController: NavController) {
     val focusManager = LocalFocusManager.current
     val viewModel: HitungViewModel by lazy {
         val db = BmiDb.getInstance(context)
-        val factory = HitungViewModelFactory(db.dao)
+        val factory = ViewModelFactory(db.dao)
         ViewModelProvider(ViewModelStore(), factory)[HitungViewModel::class.java]
     }
     val hasilBmi = viewModel.getHasilBmi().observeAsState().value
-    val data = viewModel.data.observeAsState().value
-
-    Log.d("HitungBmiContent", "Data tersimpan: $data")
 
     Column(
         modifier = Modifier
