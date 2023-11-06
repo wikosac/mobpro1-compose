@@ -54,8 +54,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wikosac.galerihewan.R
@@ -85,7 +84,7 @@ fun HitungBmiPage(navController: NavController) {
         }
     ) {
         Box(Modifier.padding(it)) {
-            HitungBmiContent(navController)
+            HitungBmiContent(navController = navController)
         }
     }
 }
@@ -99,13 +98,11 @@ fun HitungBmiContent(navController: NavController) {
         stringResource(id = R.string.wanita)
     )
     var (selectedOption, onOptionSelected) = rememberSaveable { mutableStateOf("") }
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    val viewModel: HitungViewModel by lazy {
-        val db = BmiDb.getInstance(context)
-        val factory = ViewModelFactory(db.dao)
-        ViewModelProvider(ViewModelStore(), factory)[HitungViewModel::class.java]
-    }
+    val context = LocalContext.current
+    val db = BmiDb.getInstance(context)
+    val factory = ViewModelFactory(db.dao)
+    val viewModel: HitungViewModel = viewModel(factory = factory)
     val hasilBmi = viewModel.getHasilBmi().observeAsState().value
 
     Column(
