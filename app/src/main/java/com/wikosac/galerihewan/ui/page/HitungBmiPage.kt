@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -82,7 +83,8 @@ fun HitungBmiPage() {
                 label = { Text(text = stringResource(id = R.string.berat_badan)) },
                 trailingIcon = { Text(text = "kg") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = MaterialTheme.colorScheme.primary)
             )
             OutlinedTextField(
                 value = tinggi,
@@ -90,7 +92,8 @@ fun HitungBmiPage() {
                 label = { Text(text = stringResource(id = R.string.tinggi_badan)) },
                 trailingIcon = { Text(text = "cm") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = MaterialTheme.colorScheme.primary)
             )
             Row(
                 modifier = Modifier
