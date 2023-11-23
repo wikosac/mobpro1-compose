@@ -22,9 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,13 +37,23 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wikosac.galerihewan.R
+import com.wikosac.galerihewan.data.SettingDataStore
+import com.wikosac.galerihewan.data.dataStore
 import com.wikosac.galerihewan.model.Hewan
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
 import com.wikosac.galerihewan.utils.showToast
+import kotlinx.coroutines.launch
 
 @Composable
 fun GaleriHewanApp(hewanList: List<Hewan>) {
-    var isLinearLayout by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val settingDataStore = remember { SettingDataStore(context.dataStore) }
+    val layoutPreference by settingDataStore.preferenceFlow.collectAsState(true)
+    var isLinearLayout by remember { mutableStateOf(layoutPreference) }
+    val coroutineScope = rememberCoroutineScope()
+
+    isLinearLayout = layoutPreference
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -55,12 +67,15 @@ fun GaleriHewanApp(hewanList: List<Hewan>) {
                 actions = {
                     IconButton(onClick = {
                         isLinearLayout = !isLinearLayout
+                        coroutineScope.launch {
+                            settingDataStore.saveLayout(isLinearLayout, context)
+                        }
                     }) {
                         Icon(
                             painter = painterResource(
                                 id = if (isLinearLayout) R.drawable.ic_grid_layout else R.drawable.ic_linear_layout
                             ),
-                            contentDescription = "Switch Layout"
+                            contentDescription = stringResource(R.string.switch_layout)
                         )
                     }
                 }
