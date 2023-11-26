@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.wikosac.galerihewan.MainActivity
 import com.wikosac.galerihewan.model.Hewan
 import com.wikosac.galerihewan.network.ApiStatus
 import com.wikosac.galerihewan.network.HewanApi
@@ -49,7 +48,7 @@ class MainViewModel : ViewModel() {
             .setInitialDelay(1, TimeUnit.MINUTES)
             .build()
         WorkManager.getInstance(app).enqueueUniqueWork(
-            MainActivity.CHANNEL_ID,
+            UpdateWorker.WORK_NAME,
             ExistingWorkPolicy.REPLACE,
             request
         )
