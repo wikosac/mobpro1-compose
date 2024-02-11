@@ -11,18 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,28 +33,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wikosac.galerihewan.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HitungBmiPage() {
     var berat by remember { mutableStateOf("") }
     var tinggi by remember { mutableStateOf("") }
     val radioOptions =
         listOf(stringResource(id = R.string.pria), stringResource(id = R.string.wanita))
-    var (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
+    var (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     var bmi by remember { mutableStateOf(0f) }
     var kategoriId by remember { mutableStateOf(0) }
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    var beratError by remember { mutableStateOf(false) }
+    var tinggiError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -70,81 +75,130 @@ fun HitungBmiPage() {
                 fontSize = 16.sp,
                 modifier = Modifier.fillMaxWidth(1f),
             )
-            Row(
+            OutlinedTextField(
+                value = berat,
+                onValueChange = {
+                    berat = it
+                    beratError = false
+                },
+                label = { Text(text = stringResource(id = R.string.berat_badan)) },
+                trailingIcon = {
+                    if (!beratError) {
+                        Text(text = "kg")
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.Warning,
+                            contentDescription = "Error",
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+                singleLine = true,
+                supportingText = {
+                    if (beratError) {
+                        Text(text = "Tidak boleh kosong", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.berat_badan),
-                    modifier = Modifier.fillMaxWidth(0.3f)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                TextField(
-                    value = berat,
-                    onValueChange = { berat = it },
-                    trailingIcon = { Text(text = "kg") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            Row(
+                colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = MaterialTheme.colorScheme.primary)
+            )
+            OutlinedTextField(
+                value = tinggi,
+                onValueChange = {
+                    tinggi = it
+                    tinggiError = false
+                },
+                label = { Text(text = stringResource(id = R.string.tinggi_badan)) },
+                trailingIcon = {
+                    if (!tinggiError) {
+                        Text(text = "cm")
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.Warning,
+                            contentDescription = "Error",
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
+                singleLine = true,
+                supportingText = {
+                    if (tinggiError) {
+                        Text(text = "Tidak boleh kosong", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.tinggi_badan),
-                    modifier = Modifier.fillMaxWidth(0.3f)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                TextField(
-                    value = tinggi,
-                    onValueChange = { tinggi = it },
-                    trailingIcon = { Text(text = "cm") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.textFieldColors(containerColor = Color.Transparent),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(id = R.string.jenis_kelamin),
-                    modifier = Modifier.fillMaxWidth(0.3f)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Row(
-                    modifier = Modifier
-                        .selectableGroup()
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    radioOptions.forEach { text ->
+                colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedBorderColor = MaterialTheme.colorScheme.primary)
+            )
+            OutlinedTextField(
+                value = "",
+                onValueChange = { },
+                readOnly = true,
+                label = { },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary
+                ),
+                trailingIcon = {
+                    Row(
+                        modifier = Modifier
+                            .padding(end = 24.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
                         Row(
                             modifier = Modifier.selectable(
-                                selected = (text == selectedOption),
-                                onClick = { onOptionSelected(text) },
+                                selected = (selectedOption == radioOptions[0]),
+                                onClick = { onOptionSelected(radioOptions[0]) },
                                 role = Role.RadioButton
                             ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
-                                selected = (text == selectedOption),
+                                selected = selectedOption == radioOptions[0],
                                 onClick = null
                             )
                             Text(
-                                text = text,
+                                text = radioOptions[0],
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.selectable(
+                                selected = (selectedOption == radioOptions[1]),
+                                onClick = { onOptionSelected(radioOptions[1]) },
+                                role = Role.RadioButton
+                            ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = selectedOption == radioOptions[1],
+                                onClick = null
+                            )
+                            Text(
+                                text = radioOptions[1],
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }
                     }
                 }
-            }
+            )
             Button(
                 onClick = {
+                    if (berat.isEmpty()) {
+                        beratError = true
+                    } else if (tinggi.isEmpty()) {
+                        tinggiError = true
+                    }
                     bmi = hitungBmi(berat, tinggi, selectedOption, context)
                     kategoriId = getKategoriId(bmi, selectedOption)
                 },
