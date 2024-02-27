@@ -5,9 +5,9 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.wikosac.galerihewan.navigation.destinations.listComposable
+import com.wikosac.galerihewan.navigation.destinations.taskComposable
 import com.wikosac.galerihewan.ui.SharedViewModel
 import com.wikosac.galerihewan.utils.Constants.LIST_SCREEN
-import com.wikosac.galerihewan.navigation.destinations.taskComposable
 
 @Composable
 fun SetupNavigation(

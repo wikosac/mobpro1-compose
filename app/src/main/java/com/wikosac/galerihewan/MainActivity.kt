@@ -3,44 +3,35 @@ package com.wikosac.galerihewan
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.wikosac.galerihewan.data.ToDoDatabase
+import com.wikosac.galerihewan.navigation.SetupNavigation
+import com.wikosac.galerihewan.ui.SharedViewModel
+import com.wikosac.galerihewan.ui.ViewModelFactory
 import com.wikosac.galerihewan.ui.theme.GaleriHewanTheme
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var navHostController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GaleriHewanTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                val context = LocalContext.current
+                val db = ToDoDatabase.getInstance(context)
+                val factory = ViewModelFactory(db.toDoDao)
+                val viewModel: SharedViewModel = viewModel(factory = factory)
+
+                navHostController = rememberNavController()
+                SetupNavigation(
+                    navHostController = navHostController,
+                    sharedViewModel = viewModel
+                )
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GaleriHewanTheme {
-        Greeting("Android")
     }
 }

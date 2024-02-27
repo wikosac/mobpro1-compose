@@ -5,6 +5,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.wikosac.galerihewan.ui.SharedViewModel
+import com.wikosac.galerihewan.ui.screens.list.ListScreen
 import com.wikosac.galerihewan.utils.Constants.LIST_ARGUMENT_KEY
 import com.wikosac.galerihewan.utils.Constants.LIST_SCREEN
 
@@ -18,6 +19,9 @@ fun NavGraphBuilder.listComposable(
             type = NavType.StringType
         })
     ) {
-
+        ListScreen(
+            navigateToTaskScreen = navigateToTaskScreen,
+            sharedViewModel = sharedViewModel
+        )
     }
 }
