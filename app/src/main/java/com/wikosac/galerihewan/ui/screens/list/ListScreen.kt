@@ -1,6 +1,5 @@
 package com.wikosac.galerihewan.ui.screens.list
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -33,7 +32,8 @@ fun ListScreen(
     })
     
     val allTasks by sharedViewModel.allTasks.collectAsState()
-    Log.d("ListScreen", "allTasks: $allTasks")
+    val action by sharedViewModel.action
+    sharedViewModel.handleDatabaseActions(action)
 
     Scaffold(
         topBar = {

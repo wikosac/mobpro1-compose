@@ -48,11 +48,36 @@ class SharedViewModel(
             id.value = selectedTask.id
             title.value = selectedTask.title
             description.value = selectedTask.description
+            time.value = selectedTask.time
         } else {
             id.value = 0
             title.value = ""
             description.value = ""
+            time.value = 0L
         }
+    }
+
+    private fun addTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDoTask = ToDoTask(
+                title = title.value,
+                description = description.value,
+                time = time.value
+            )
+            toDoDao.addTask(toDoTask)
+        }
+    }
+
+    val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
+
+    fun handleDatabaseActions(action: Action) {
+        when (action) {
+            Action.ADD -> addTask()
+//            Action.UPDATE -> updateTask()
+//            Action.DELETE -> deleteTask()
+            else -> {}
+        }
+        this.action.value = Action.NO_ACTION
     }
 
 }
