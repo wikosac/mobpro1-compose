@@ -8,4 +8,9 @@
     <string name="update_icon">Update Icon</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
+    <string name="no_data">Tidak ada data</string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+    <string name="delete_task">Hapus \'%1$s\'?</string>
+    <string name="delete_task_confirm">Yakin untuk menghapus \'%1$s\'?</string>
 </resources>
