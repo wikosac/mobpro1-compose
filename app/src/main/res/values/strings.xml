@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Galeri Hewan</string>
     <string name="add_button">Add button</string>
+    <string name="add_task">Add Task</string>
+    <string name="back_arrow">Back Arrow</string>
+    <string name="close_icon">Close Icon</string>
+    <string name="delete_icon">Delete Icon</string>
+    <string name="update_icon">Update Icon</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
 </resources>
